@@ -223,5 +223,26 @@ module ChefIngredientCookbook
     def windows?
       node['platform_family'] == 'windows'
     end
+
+    #
+    # Creates a Mixlib::Install instance using the common attributes of
+    # chef_ingredient resource that can be used for querying builds or
+    # generating install scripts.
+    #
+    def installer
+      @installer ||= begin
+        ensure_mixlib_install_gem_installed!
+
+        options = {
+          product_name: new_resource.product_name,
+          channel: new_resource.channel,
+          product_version: new_resource.version
+        }.tap do |opt|
+          opt[:shell_type] = :ps1 if windows?
+        end
+
+        Mixlib::Install.new(options)
+      end
+    end
   end
 end

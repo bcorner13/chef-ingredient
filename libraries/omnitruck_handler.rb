@@ -75,22 +75,6 @@ module ChefIngredient
       end
     end
 
-    def installer
-      @installer ||= begin
-        ensure_mixlib_install_gem_installed!
-
-        options = {
-          product_name: new_resource.product_name,
-          channel: new_resource.channel,
-          product_version: new_resource.version
-        }.tap do |opt|
-          opt[:shell_type] = :ps1 if windows?
-        end
-
-        Mixlib::Install.new(options)
-      end
-    end
-
     def installer_script_path
       @installer_script_path ||= begin
         installer_file = windows? ? 'installer.ps1' : 'installer.sh'
